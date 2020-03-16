@@ -9,6 +9,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gopl.io/ch2/popcount"
 	"os"
 	"strconv"
 
@@ -27,6 +28,8 @@ func main() {
 		fmt.Printf("%s = %s, %s = %s\n",
 			f, tempconv.FToC(f), c, tempconv.CToF(c))
 	}
+
+	fmt.Printf("Pop count of 666 is %v\n", popcount.PopCount(666))
 }
 
 //!-
