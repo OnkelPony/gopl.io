@@ -3,7 +3,7 @@
 
 // Run with "web" command-line argument for web server.
 // See page 13.
-//!+main
+// !+main
 
 // Lissajous generates GIF animations of random Lissajous figures.
 package main
@@ -15,11 +15,10 @@ import (
 	"io"
 	"math"
 	"math/rand"
-	"os"
 	"strconv"
 )
 
-//!-main
+// !-main
 // Packages not needed by version in book.
 import (
 	"log"
@@ -27,7 +26,7 @@ import (
 	"time"
 )
 
-//!+main
+// !+main
 
 var palette = []color.Color{color.White, color.Black}
 
@@ -37,35 +36,34 @@ const (
 )
 
 func main() {
-	//!-main
+	// !-main
 	// The sequence of images is deterministic unless we seed
 	// the pseudo-random number generator using the current time.
 	// Thanks to Randall McPherson for pointing out the omission.
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	if len(os.Args) > 1 && os.Args[1] == "web" {
-		//!+http
-		handler := func(w http.ResponseWriter, r *http.Request) {
-			lissajous(w, r)
-		}
-		http.HandleFunc("/", handler)
-		//!-http
-		log.Fatal(http.ListenAndServe("localhost:8000", nil))
-		return
+	// !+http
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		lissajous(w, r)
 	}
-	//!+main
-	lissajous(os.Stdout, nil)
+	http.HandleFunc("/", handler)
+	// !-http
+	log.Fatal(http.ListenAndServe("localhost:8000", nil))
+	return
+	// !+main
 }
 
 func lissajous(out io.Writer, r *http.Request) {
 	const (
-		//cycles  = 5     // number of complete x oscillator revolutions
+		// cycles  = 5     // number of complete x oscillator revolutions
 		res     = 0.001 // angular resolution
 		size    = 100   // image canvas covers [-size..+size]
 		nframes = 64    // number of animation frames
 		delay   = 8     // delay between frames in 10ms units
 	)
-	cycles, _ := strconv.Atoi(r.Form.Get("cycles"))
+	q := r.URL.Query()["cycles"]
+	cycles, _ := strconv.Atoi(q[0])
+	// cycles = 5
 	freq := rand.Float64() * 3.0 // relative frequency of y oscillator
 	anim := gif.GIF{LoopCount: nframes}
 	phase := 0.0 // phase difference
@@ -85,4 +83,4 @@ func lissajous(out io.Writer, r *http.Request) {
 	gif.EncodeAll(out, &anim) // NOTE: ignoring encoding errors
 }
 
-//!-main
+// !-main
