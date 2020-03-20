@@ -30,7 +30,6 @@ var color = "blue"
 func main() {
 	var output string
 	handler := func(w http.ResponseWriter, r *http.Request) {
-		params := r.URL.Query()
 		w.Header().Set("Content-Type", "image/svg+xml")
 		fmt.Fprintln(w, output)
 	}
@@ -49,7 +48,6 @@ func main() {
 	}
 	output += fmt.Sprintln("</svg>")
 
-
 	http.HandleFunc("/", handler)
 	//!-http
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
@@ -64,7 +62,7 @@ func corner(i, j int) (float64, float64) {
 	z := f(x, y)
 	if z > 0.07 {
 		color = "red"
-	} else if (z > 0.03) {
+	} else if z > 0.03 {
 		color = "purple"
 	} else {
 		color = "blue"
